@@ -7,11 +7,13 @@ function Login() {
     // react state
     const [errMessage, setErrMessage] = useState({});
     const [isSubmit, setIsSubmit] = useState(false);
+    const [count, setCount] = useState(0);
 
     // error messages
     const err_message = {
         err_username : "Invalid username, please check again!",
-        err_password : "Invalid password, please check again!"
+        err_password : "Invalid password, please check again!",
+        err_btn : "This account has blocked."
     }
 
     // static database username and password
@@ -46,12 +48,14 @@ function Login() {
             if (getDataUsername.password !== ipassword.value) {
                 // Invalid password
                 setErrMessage({ name: "ipassword", message: err_message.err_password });
+                countMistake(1);
             } else {
                 setIsSubmit(true);
             }
         } else {
             // Username not found
             setErrMessage({ name: "iusername", message: err_message.err_username });
+            countMistake(1);
         }
     }
 
@@ -61,6 +65,15 @@ function Login() {
         <p className="fs-6">{errMessage.message}</p>
       </div>
     );
+
+    // count mistake
+    const countMistake = (counter) =>  {
+        setCount(count + counter);
+
+        if (count == 2) {
+            setErrMessage({ name: "btnsubmit", message: err_message.err_btn });
+        }
+    }
 
     const renderView = (
         <div className="login">
@@ -92,7 +105,8 @@ function Login() {
                                         </div>
                                         <div className="row">
                                             <div class="mb-3">
-                                                <button type="submit" className="col-md-12 btn btn-md btn-primary">Sign In</button>
+                                                {count == 3 ? <button type="submit" className="col-md-12 btn btn-md btn-primary" disabled>Sign In</button> : <button type="submit" className="col-md-12 btn btn-md btn-primary" >Sign In</button> }
+                                                {renderErrMessage("btnsubmit")}
                                             </div>
                                         </div>
                                     </div>
